@@ -11,13 +11,11 @@ module.exports = {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy'
   },
   transform: {
-    '^.+\\.(ts|tsx)$': ['ts-jest', {
-      tsconfig: 'tsconfig.json'
-    }]
+    '^.+\\.(ts|tsx)$': 'ts-jest'
   },
   testMatch: [
-    '**/__tests__/**/*.+(ts|tsx|js)',
-    '**/?(*.)+(spec|test).+(ts|tsx|js)'
+    '<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}',
+    '<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}'
   ],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   collectCoverageFrom: [
@@ -32,5 +30,6 @@ module.exports = {
       lines: 80,
       statements: 80
     }
-  }
+  },
+  testTimeout: 10000
 }; 

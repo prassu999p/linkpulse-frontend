@@ -1,31 +1,43 @@
 import { createTheme } from '@mui/material/styles';
 
-const theme = createTheme({
+export const theme = createTheme({
   palette: {
     primary: {
-      main: '#1976d2',
+      main: '#0A66C2', // LinkedIn blue
     },
     secondary: {
-      main: '#dc004e',
+      main: '#057642', // Professional green
     },
     background: {
-      default: '#f5f5f5',
+      default: '#f3f2ef', // LinkedIn background color
     },
   },
   typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-    h1: {
-      fontSize: '2.5rem',
-      fontWeight: 500,
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+    ].join(','),
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none', // Prevents all-caps button text
+          borderRadius: '28px', // LinkedIn's rounded button style
+        },
+      },
     },
-    h2: {
-      fontSize: '2rem',
-      fontWeight: 500,
-    },
-    body1: {
-      fontSize: '1rem',
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          borderRadius: '8px', // Consistent border radius
+        },
+      },
     },
   },
-});
-
-export default theme; 
+}); 
