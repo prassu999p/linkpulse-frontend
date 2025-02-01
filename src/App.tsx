@@ -1,15 +1,13 @@
 import React from 'react';
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import { theme } from './styles/theme';
-import { PostGenerationDemo } from './components/PostGeneration/PostGenerationDemo';
+import { AuthProvider } from './context/AuthContext';
+import { AppRouter } from './router';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <PostGenerationDemo />
-    </ThemeProvider>
+    <AuthProvider>
+      <AppRouter />
+    </AuthProvider>
   );
-}
+};
 
-export default App; 
+export default App;

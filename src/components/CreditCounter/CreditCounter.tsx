@@ -58,4 +58,4 @@ const CreditCounter: React.FC = () => {
   );
 };
 
-export default CreditCounter; 
+export default CreditCounter;

@@ -1,4 +1,4 @@
-import api from './config';
+import { api } from './config';
 
 interface CreditResponse {
   credits: number;
@@ -9,7 +9,7 @@ export const creditService = {
     const response = await api.get<CreditResponse>('/api/credits');
     return response.data;
   },
-  
+
   useCredits: async (amount: number): Promise<CreditResponse> => {
     const response = await api.post<CreditResponse>('/api/credits/use', { amount });
     return response.data;
@@ -21,4 +21,4 @@ export const contentService = {
     const response = await api.post<{ content: string }>('/api/generate', { prompt });
     return response.data;
   },
-}; 
+};
