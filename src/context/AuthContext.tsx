@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { api } from '../api/config';
 import { AxiosError } from 'axios';
+import { SignupData } from '../components/auth/SignupPage';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -9,7 +10,7 @@ interface AuthContextType {
     withEmail: (email: string, password: string) => Promise<void>;
     withLinkedIn: () => Promise<void>;
   };
-  signUp: (email: string, password: string) => Promise<void>;
+  signUp: (data: SignupData) => Promise<void>;
   signOut: () => void;
 }
 
@@ -37,68 +38,44 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signIn = {
     withEmail: async (email: string, password: string) => {
       try {
-        console.log('Attempting to sign in with:', { email, baseURL: api.defaults.baseURL });
+        console.log('Attempting to sign in with:', { email });
         const response = await api.post('/auth/login', { email, password });
         console.log('Sign-in response:', response.data);
 
-        const { token } = response.data;
-        if (!token) {
+        const { access_token } = response.data;
+        if (!access_token) {
           throw new Error('No token received from server');
         }
 
-        localStorage.setItem('auth_token', token);
+        localStorage.setItem('auth_token', access_token);
         setIsAuthenticated(true);
       } catch (error) {
-        const axiosError = error as AxiosError<any>;
-        console.error('Email sign-in failed:', {
-          status: axiosError.response?.status,
-          data: axiosError.response?.data,
-          message: axiosError.message,
-          config: {
-            url: axiosError.config?.url,
-            method: axiosError.config?.method,
-            baseURL: axiosError.config?.baseURL,
-          },
-        });
+        console.error('Sign-in failed:', error);
         throw error;
       }
     },
     withLinkedIn: async () => {
-      try {
-        // Redirect to LinkedIn OAuth flow
-        window.location.href = `${api.defaults.baseURL}/auth/linkedin`;
-      } catch (error) {
-        console.error('LinkedIn sign-in failed:', error);
-        throw error;
-      }
+      // To be implemented
+      throw new Error('LinkedIn sign-in not implemented');
     },
   };
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (data: SignupData) => {
     try {
-      console.log('Attempting to sign up with:', { email, baseURL: api.defaults.baseURL });
-      const response = await api.post('/auth/register', { email, password });
+      console.log('Attempting to sign up with:', data);
+      const response = await api.post('/auth/register', data);
       console.log('Sign-up response:', response.data);
 
-      const { token } = response.data;
-      if (!token) {
-        throw new Error('No token received from server');
+      const { access_token } = response.data;
+      if (access_token) {
+        localStorage.setItem('auth_token', access_token);
+        setIsAuthenticated(true);
       }
-
-      localStorage.setItem('auth_token', token);
-      setIsAuthenticated(true);
     } catch (error) {
-      const axiosError = error as AxiosError<any>;
-      console.error('Sign-up failed:', {
-        status: axiosError.response?.status,
-        data: axiosError.response?.data,
-        message: axiosError.message,
-        config: {
-          url: axiosError.config?.url,
-          method: axiosError.config?.method,
-          baseURL: axiosError.config?.baseURL,
-        },
-      });
+      console.error('Sign-up failed:', error);
+      if (error instanceof AxiosError && error.response?.data?.detail) {
+        throw new Error(error.response.data.detail);
+      }
       throw error;
     }
   };
@@ -109,7 +86,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        loading,
+        signIn,
+        signUp,
+        signOut,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
